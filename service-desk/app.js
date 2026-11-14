@@ -83,6 +83,7 @@ ticketForm.addEventListener("submit", (event) => {
     return;
   }
 
+  const submittedAt = new Date().toISOString();
   const formTicket = {
     id: nextId(),
     requester: requesterInput.value.trim().replace(/\s+/gu, " "),
@@ -93,8 +94,8 @@ ticketForm.addEventListener("submit", (event) => {
     title: titleInput.value.trim().replace(/\s+/gu, " "),
     description: descriptionInput.value.trim(),
     correction: "",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: submittedAt,
+    updatedAt: submittedAt,
     events: [
       `Chamado aberto por ${document.querySelector("#requester").value.trim()}.`
     ]
@@ -387,11 +388,12 @@ function addInternalComment(ticketId) {
     ticket.internalComments = [];
   }
 
+  const updatedAt = new Date().toISOString();
   ticket.internalComments.push({
     text,
-    createdAt: new Date().toISOString()
+    createdAt: updatedAt
   });
-  ticket.updatedAt = new Date().toISOString();
+  ticket.updatedAt = updatedAt;
   saveTickets();
   showToast("Observação interna adicionada.");
   render();
@@ -418,10 +420,11 @@ function updateSelectedTicket(ticketId) {
     eventList.push(`Correção registrada: ${newCorrection}`);
   }
 
+  const updatedAt = new Date().toISOString();
   ticket.status = newStatus;
   ticket.priority = newPriority;
   ticket.correction = newCorrection;
-  ticket.updatedAt = new Date().toISOString();
+  ticket.updatedAt = updatedAt;
   ticket.events = ticket.events.concat(eventList);
 
   showToast(`Chamado #${ticket.id} atualizado.`);
@@ -450,10 +453,15 @@ function priorityClass(priority) {
 }
 
 function formatDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Data inv\u00e1lida";
+
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "short",
-    timeStyle: "short"
-  }).format(new Date(value));
+    timeStyle: "short",
+    hourCycle: "h23",
+    timeZone: "America/Sao_Paulo"
+  }).format(date);
 }
 
 function escapeHtml(value) {
