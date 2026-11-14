@@ -104,7 +104,7 @@ ticketForm.addEventListener("submit", (event) => {
   selectedTicketId = formTicket.id;
   saveTickets();
   ticketForm.reset();
-  showToast(`Chamado #${formTicket.id} aberto com sucesso.`);
+  showToast(`Chamado cadastrado com sucesso. Protocolo: #${formTicket.id}.`);
   render();
 });
 
