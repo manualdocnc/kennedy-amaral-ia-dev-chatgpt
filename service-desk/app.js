@@ -333,9 +333,50 @@ function renderTicketDetails() {
         ${ticket.events.map((event) => `<li class="history-line">${escapeHtml(event)}</li>`).join("")}
       </ul>
     </div>
+
+    <section class="internal-notes" aria-labelledby="internalNotesTitle">
+      <h4 id="internalNotesTitle">Observações internas (somente analistas)</h4>
+      <label for="internalCommentInput">Adicionar observação</label>
+      <textarea id="internalCommentInput" rows="3" maxlength="1000" placeholder="Escreva uma observação interna para a equipe."></textarea>
+      <button class="primary" id="addInternalComment" type="button">Adicionar observação</button>
+      <ul id="internalCommentList">
+        ${(ticket.internalComments || []).map((comment) => `
+          <li class="internal-note">
+            <p>${escapeHtml(comment.text)}</p>
+            <time class="ticket-meta">${formatDate(comment.createdAt)}</time>
+          </li>
+        `).join("") || "<li class=\"ticket-meta\">Nenhuma observação interna.</li>"}
+      </ul>
+    </section>
   `;
 
   document.querySelector("#saveTicket").addEventListener("click", () => updateSelectedTicket(ticket.id));
+  document.querySelector("#addInternalComment").addEventListener("click", () => addInternalComment(ticket.id));
+}
+
+function addInternalComment(ticketId) {
+  const ticket = tickets.find((item) => item.id === ticketId);
+  const commentInput = document.querySelector("#internalCommentInput");
+  const text = commentInput.value.trim();
+
+  if (!ticket || !text) {
+    showToast("Digite uma observação antes de adicionar.");
+    commentInput.focus();
+    return;
+  }
+
+  if (!Array.isArray(ticket.internalComments)) {
+    ticket.internalComments = [];
+  }
+
+  ticket.internalComments.push({
+    text,
+    createdAt: new Date().toISOString()
+  });
+  ticket.updatedAt = new Date().toISOString();
+  saveTickets();
+  showToast("Observação interna adicionada.");
+  render();
 }
 
 function updateSelectedTicket(ticketId) {

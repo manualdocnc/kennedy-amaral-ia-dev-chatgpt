@@ -318,7 +318,8 @@ textarea {
 }
 
 .description-box,
-.history-box {
+.history-box,
+.internal-notes {
   margin-top: 16px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -331,6 +332,36 @@ textarea {
   gap: 10px;
   margin: 0;
   padding-left: 18px;
+}
+
+.internal-notes h4 {
+  margin: 0 0 12px;
+}
+
+.internal-notes label {
+  margin-bottom: 7px;
+}
+
+.internal-notes button {
+  margin-top: 10px;
+}
+
+#internalCommentList {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.internal-note {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
+.internal-note p {
+  margin-bottom: 5px;
+  white-space: pre-wrap;
 }
 
 .table-wrap {
