@@ -49,6 +49,15 @@ const historyTable = document.querySelector("#historyTable");
 const searchInput = document.querySelector("#searchInput");
 const clearData = document.querySelector("#clearData");
 const toast = document.querySelector("#toast");
+const requesterInput = document.querySelector("#requester");
+const emailInput = document.querySelector("#email");
+const titleInput = document.querySelector("#title");
+const descriptionInput = document.querySelector("#description");
+const validatedInputs = [requesterInput, emailInput, titleInput, descriptionInput];
+
+validatedInputs.forEach((input) => {
+  input.addEventListener("input", () => validateTicketField(input));
+});
 
 tabs.forEach((tab) => {
   tab.addEventListener("click", () => {
@@ -63,15 +72,20 @@ tabs.forEach((tab) => {
 ticketForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
+  if (!validateTicketForm()) {
+    ticketForm.reportValidity();
+    return;
+  }
+
   const formTicket = {
     id: nextId(),
-    requester: document.querySelector("#requester").value.trim(),
-    email: document.querySelector("#email").value.trim(),
+    requester: requesterInput.value.trim().replace(/\s+/gu, " "),
+    email: emailInput.value.trim(),
     category: document.querySelector("#category").value,
     priority: document.querySelector("#priority").value,
     status: "Aberto",
-    title: document.querySelector("#title").value.trim(),
-    description: document.querySelector("#description").value.trim(),
+    title: titleInput.value.trim().replace(/\s+/gu, " "),
+    description: descriptionInput.value.trim(),
     correction: "",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -98,6 +112,58 @@ clearData.addEventListener("click", () => {
   showToast("Base local restaurada.");
   render();
 });
+
+function validateTicketForm() {
+  let isValid = true;
+
+  validatedInputs.forEach((input) => {
+    if (!validateTicketField(input)) {
+      isValid = false;
+    }
+  });
+
+  return isValid;
+}
+
+function validateTicketField(input) {
+  const value = input.value.trim();
+  let message = "";
+
+  if (value) {
+    switch (input.id) {
+      case "requester": {
+        const normalizedName = value.replace(/\s+/gu, " ");
+        const letterCount = Array.from(normalizedName.matchAll(/\p{L}/gu)).length;
+        if (letterCount < 3 || !/^[\p{L}\p{M}]+(?:[ '-][\p{L}\p{M}]+)*$/u.test(normalizedName)) {
+          message = "Informe um nome valido com pelo menos 3 letras; use apenas letras, espacos, hifens ou apostrofos.";
+        }
+        break;
+      }
+      case "email":
+        if (!/^[^\s@]+@[^\s@.]+\.[^\s@.]{2,}$/u.test(value)) {
+          message = "Informe um e-mail valido, como nome@empresa.com.";
+        }
+        break;
+      case "title": {
+        const usefulCharacters = Array.from(value.matchAll(/[\p{L}\p{N}]/gu)).length;
+        if (usefulCharacters < 5) {
+          message = "Use um titulo descritivo com pelo menos 5 letras ou numeros.";
+        }
+        break;
+      }
+      case "description": {
+        const usefulCharacters = Array.from(value.matchAll(/[\p{L}\p{N}]/gu)).length;
+        if (usefulCharacters < 12) {
+          message = "Descreva o problema com pelo menos 12 letras ou numeros.";
+        }
+        break;
+      }
+    }
+  }
+
+  input.setCustomValidity(message);
+  return input.checkValidity();
+}
 
 function loadTickets() {
   const stored = localStorage.getItem(STORAGE_KEY);

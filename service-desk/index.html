@@ -33,11 +33,11 @@
         <div class="field-grid">
           <label>
             Nome do solicitante
-            <input id="requester" type="text" placeholder="Ex.: Ana Souza" required>
+            <input id="requester" type="text" placeholder="Ex.: Ana Souza" minlength="3" maxlength="100" autocomplete="name" required>
           </label>
           <label>
             E-mail
-            <input id="email" type="email" placeholder="ana@empresa.com" required>
+            <input id="email" type="email" placeholder="ana@empresa.com" maxlength="254" autocomplete="email" required>
           </label>
           <label>
             Categoria
@@ -63,12 +63,12 @@
 
         <label>
           Título do chamado
-          <input id="title" type="text" placeholder="Ex.: Não consigo acessar o sistema financeiro" required>
+          <input id="title" type="text" placeholder="Ex.: Não consigo acessar o sistema financeiro" minlength="8" maxlength="120" required>
         </label>
 
         <label>
           Descrição
-          <textarea id="description" rows="6" placeholder="Descreva o problema, quando começou e o impacto para o trabalho." required></textarea>
+          <textarea id="description" rows="6" placeholder="Descreva o problema, quando começou e o impacto para o trabalho." minlength="20" maxlength="2000" required></textarea>
         </label>
 
         <div class="form-actions">
