@@ -16,6 +16,7 @@ Quando um pedido não definia um critério de negócio, foi adotada uma regra ex
 | Validação insuficiente do formulário | Foram acrescentadas validações para nome, e-mail, título e descrição, limites de tamanho e normalização de espaços no nome e no título. | `d850544 bugfix: validar campos do chamado` |
 | Envios repetidos podiam criar chamados duplicados | Chamados ativos com o mesmo e-mail, título e descrição são comparados após normalizar caixa, acentos e espaços. Uma duplicata é bloqueada e o usuário recebe o número do chamado existente. Chamados resolvidos não bloqueiam um novo registro. | `18ea1af bugfix: evitar chamados duplicados` |
 | Confirmação de envio não identificava o protocolo | A mensagem de sucesso passou a exibir explicitamente o número do protocolo gerado. | `bce7135 bugfix: confirmar envio com protocolo` |
+| Datas e horários podiam variar conforme o fuso do navegador | Abertura e atualização usam um único timestamp UTC por operação, armazenado em ISO 8601; a interface converte a exibição explicitamente para `America/Sao_Paulo`. Valores de data inválidos recebem indicação própria. | `dfc53f2 bugfix: corrigir fuso de datas dos chamados` |
 
 ## Melhorias implementadas
 
@@ -41,6 +42,8 @@ Exemplos do formato usado:
 
 > Para cada melhoria implementada, realize um commit atômico separado na branch prepod. Adicionar filtros de chamados por prioridade: Baixa, Média, Alta e Crítica. Use mensagens iniciadas por `feature:`.
 
+> Para cada bug corrigido, realize um commit atômico separado na branch prepod. Corrigir a gravação e a exibição das datas de abertura e atualização considerando o fuso horário. Use uma mensagem iniciada por `bugfix:`.
+
 Os detalhes que não estavam especificados foram resolvidos usando o comportamento e os valores já presentes no aplicativo. A exceção de negócio foi o prazo de atraso: como não havia regra de SLA nos arquivos do projeto, adotou-se e exibiu-se o limite de três dias.
 
 ## Fluxo de versionamento
@@ -48,12 +51,13 @@ Os detalhes que não estavam especificados foram resolvidos usando o comportamen
 1. A branch `Staging` foi criada a partir de `main` e publicada no GitHub.
 2. O commit `657cb09` adicionou `service-desk/teste.txt` em `Staging`; em seguida, `Staging` foi mesclada por fast-forward em `main` e a atualização foi publicada.
 3. A branch `Preprod` foi criada a partir de `main` no commit `657cb09` e publicada.
-4. As quatro correções foram registradas em commits separados e publicadas em `origin/Preprod`.
-5. As quatro melhorias também foram registradas em commits separados e publicadas em `origin/Preprod`.
-6. `DETALHAMENTO.md` foi solicitado para a branch `main`. Os commits de funcionalidades listados acima permaneceram em `Preprod`; não houve merge dessas alterações de código para `main` durante a preparação deste documento.
+4. As quatro primeiras correções foram registradas em commits separados e publicadas em `origin/Preprod`.
+5. As quatro melhorias foram registradas em commits separados e publicadas em `origin/Preprod`.
+6. A correção de datas e fuso horário foi registrada no commit `dfc53f2` e publicada em `origin/Preprod`.
+7. `DETALHAMENTO.md` foi criado na branch `main` no commit `d285b7e` e atualizado para incluir a quinta correção. Os commits de funcionalidades continuam em `Preprod`; não houve merge dessas alterações de código para `main`.
 
 ## Estado das branches ao preparar este documento
 
-- `Preprod`: contém os quatro commits de correção e os quatro commits de melhoria, publicados em `origin/Preprod`.
-- `main`: contém o histórico até `657cb09`; este documento é adicionado diretamente a essa branch.
+- `Preprod`: contém cinco commits de correção e quatro commits de melhoria, publicados em `origin/Preprod`.
+- `main`: contém o histórico de código até `657cb09` e mantém este relatório em commits de documentação; as alterações do Service Desk permanecem em `Preprod`.
 - `Staging`: permanece no commit `657cb09`.
