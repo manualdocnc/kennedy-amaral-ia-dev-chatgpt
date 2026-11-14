@@ -49,6 +49,10 @@ const historyTable = document.querySelector("#historyTable");
 const searchInput = document.querySelector("#searchInput");
 const statusFilter = document.querySelector("#statusFilter");
 const priorityFilter = document.querySelector("#priorityFilter");
+const openTicketMetric = document.querySelector("#openTicketMetric");
+const completedTicketMetric = document.querySelector("#completedTicketMetric");
+const overdueTicketMetric = document.querySelector("#overdueTicketMetric");
+const inProgressTicketMetric = document.querySelector("#inProgressTicketMetric");
 const clearData = document.querySelector("#clearData");
 const toast = document.querySelector("#toast");
 const requesterInput = document.querySelector("#requester");
@@ -220,9 +224,23 @@ function nextId() {
 }
 
 function render() {
+  renderMetrics();
   renderTicketList();
   renderTicketDetails();
   renderHistory();
+}
+
+function renderMetrics() {
+  const now = Date.now();
+  const overdueAfterMs = 3 * 24 * 60 * 60 * 1000;
+
+  openTicketMetric.textContent = tickets.filter((ticket) => ticket.status === "Aberto").length;
+  completedTicketMetric.textContent = tickets.filter((ticket) => ticket.status === "Resolvido").length;
+  inProgressTicketMetric.textContent = tickets.filter((ticket) => ticket.status === "Em atendimento").length;
+  overdueTicketMetric.textContent = tickets.filter((ticket) => {
+    const createdAt = Date.parse(ticket.createdAt);
+    return ticket.status !== "Resolvido" && Number.isFinite(createdAt) && now - createdAt > overdueAfterMs;
+  }).length;
 }
 
 function renderTicketList() {
