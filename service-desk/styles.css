@@ -194,6 +194,20 @@ textarea {
   width: min(360px, 100%);
 }
 
+.ticket-filters {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+}
+
+.search-box {
+  flex: 1 1 260px;
+}
+
+.status-filter {
+  flex: 0 1 220px;
+}
+
 .ticket-list {
   overflow: hidden;
 }
@@ -372,5 +386,10 @@ th {
   .field-grid,
   .details-grid {
     grid-template-columns: 1fr;
+  }
+
+  .ticket-filters {
+    align-items: stretch;
+    flex-direction: column;
   }
 }

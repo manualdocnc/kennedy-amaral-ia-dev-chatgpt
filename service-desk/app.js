@@ -47,6 +47,7 @@ const ticketDetails = document.querySelector("#ticketDetails");
 const ticketCounter = document.querySelector("#ticketCounter");
 const historyTable = document.querySelector("#historyTable");
 const searchInput = document.querySelector("#searchInput");
+const statusFilter = document.querySelector("#statusFilter");
 const clearData = document.querySelector("#clearData");
 const toast = document.querySelector("#toast");
 const requesterInput = document.querySelector("#requester");
@@ -109,6 +110,7 @@ ticketForm.addEventListener("submit", (event) => {
 });
 
 searchInput.addEventListener("input", renderTicketList);
+statusFilter.addEventListener("change", renderTicketList);
 
 clearData.addEventListener("click", () => {
   localStorage.removeItem(STORAGE_KEY);
@@ -223,12 +225,15 @@ function render() {
 
 function renderTicketList() {
   const term = searchInput.value.trim().toLowerCase();
+  const selectedStatus = statusFilter.value;
   const filteredTickets = tickets.filter((ticket) => {
-    return (
+    const matchesSearch = (
       String(ticket.id).includes(term) ||
       ticket.title.toLowerCase().includes(term) ||
       ticket.requester.toLowerCase().includes(term)
     );
+
+    return matchesSearch && (!selectedStatus || ticket.status === selectedStatus);
   });
 
   ticketCounter.textContent = `${filteredTickets.length} chamado${filteredTickets.length === 1 ? "" : "s"}`;

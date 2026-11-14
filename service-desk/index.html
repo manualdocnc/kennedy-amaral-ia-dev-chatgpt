@@ -84,10 +84,22 @@
           <p class="eyebrow">Suporte</p>
           <h2 id="analystTitle">Painel do analista</h2>
         </div>
-        <label class="search-box">
-          Buscar chamado
-          <input id="searchInput" type="search" placeholder="Digite ID, título ou solicitante">
-        </label>
+        <div class="ticket-filters">
+          <label class="search-box">
+            Buscar chamado
+            <input id="searchInput" type="search" placeholder="Digite ID, título ou solicitante">
+          </label>
+          <label class="status-filter">
+            Filtrar por status
+            <select id="statusFilter">
+              <option value="">Todos os status</option>
+              <option>Aberto</option>
+              <option>Em atendimento</option>
+              <option>Aguardando usuário</option>
+              <option>Resolvido</option>
+            </select>
+          </label>
+        </div>
       </div>
 
       <div class="support-layout">
