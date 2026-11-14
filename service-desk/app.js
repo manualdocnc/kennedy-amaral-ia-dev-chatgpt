@@ -48,6 +48,7 @@ const ticketCounter = document.querySelector("#ticketCounter");
 const historyTable = document.querySelector("#historyTable");
 const searchInput = document.querySelector("#searchInput");
 const statusFilter = document.querySelector("#statusFilter");
+const priorityFilter = document.querySelector("#priorityFilter");
 const clearData = document.querySelector("#clearData");
 const toast = document.querySelector("#toast");
 const requesterInput = document.querySelector("#requester");
@@ -111,6 +112,7 @@ ticketForm.addEventListener("submit", (event) => {
 
 searchInput.addEventListener("input", renderTicketList);
 statusFilter.addEventListener("change", renderTicketList);
+priorityFilter.addEventListener("change", renderTicketList);
 
 clearData.addEventListener("click", () => {
   localStorage.removeItem(STORAGE_KEY);
@@ -226,6 +228,7 @@ function render() {
 function renderTicketList() {
   const term = searchInput.value.trim().toLowerCase();
   const selectedStatus = statusFilter.value;
+  const selectedPriority = priorityFilter.value;
   const filteredTickets = tickets.filter((ticket) => {
     const matchesSearch = (
       String(ticket.id).includes(term) ||
@@ -233,7 +236,9 @@ function renderTicketList() {
       ticket.requester.toLowerCase().includes(term)
     );
 
-    return matchesSearch && (!selectedStatus || ticket.status === selectedStatus);
+    return matchesSearch &&
+      (!selectedStatus || ticket.status === selectedStatus) &&
+      (!selectedPriority || ticket.priority === selectedPriority);
   });
 
   ticketCounter.textContent = `${filteredTickets.length} chamado${filteredTickets.length === 1 ? "" : "s"}`;
