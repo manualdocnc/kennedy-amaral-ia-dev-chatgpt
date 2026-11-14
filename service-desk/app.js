@@ -94,6 +94,12 @@ ticketForm.addEventListener("submit", (event) => {
     ]
   };
 
+  const duplicateTicket = findDuplicateTicket(formTicket);
+  if (duplicateTicket) {
+    showToast(`Poss\u00edvel duplica\u00e7\u00e3o: o chamado #${duplicateTicket.id} ja existe.`);
+    return;
+  }
+
   tickets.unshift(formTicket);
   selectedTicketId = formTicket.id;
   saveTickets();
@@ -112,6 +118,28 @@ clearData.addEventListener("click", () => {
   showToast("Base local restaurada.");
   render();
 });
+
+function normalizeDuplicateValue(value) {
+  return String(value)
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .replace(/\s+/gu, " ")
+    .trim();
+}
+
+function findDuplicateTicket(candidate) {
+  const candidateEmail = normalizeDuplicateValue(candidate.email);
+  const candidateTitle = normalizeDuplicateValue(candidate.title);
+  const candidateDescription = normalizeDuplicateValue(candidate.description);
+
+  return tickets.find((ticket) =>
+    ticket.status !== "Resolvido" &&
+    normalizeDuplicateValue(ticket.email) === candidateEmail &&
+    normalizeDuplicateValue(ticket.title) === candidateTitle &&
+    normalizeDuplicateValue(ticket.description) === candidateDescription
+  );
+}
 
 function validateTicketForm() {
   let isValid = true;
